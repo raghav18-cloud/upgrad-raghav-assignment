@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    environment {
+        registry = "614217881944.dkr.ecr.us-east-1.amazonaws.com/nodejs-appb274afd63b71"
+    }
+
+ stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/raghav18-cloud/upgrad-raghav-assignment.git']]])
+            }
+        }
+
+stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry
+        }
+      }
+    }
+
+stage('Pushing to ECR') {
+     steps{  
+         script {
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614217881944.dkr.ecr.us-east-1.amazonaws.com'
+                sh 'docker push 614217881944.dkr.ecr.us-east-1.amazonaws.com/nodejs-appb274afd63b71:latest'
+         }
+        }
+      }
+
+   }
+
+}
