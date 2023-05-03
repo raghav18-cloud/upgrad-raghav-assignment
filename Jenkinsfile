@@ -24,8 +24,8 @@ stage('Pushing to ECR') {
          script {
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614217881944.dkr.ecr.us-east-1.amazonaws.com'
                 sh 'docker push 614217881944.dkr.ecr.us-east-1.amazonaws.com/nodejs-appb274afd63b71:latest'
-                sh 'sudo -p su - jenkins_devops'
-                def sshCommand = "ssh  app_devops@172.31.84.99 'docker run -d -p 8080:8080 --name nodejs_deploy  614217881944.dkr.ecr.us-east-1.amazonaws.com/nodejs-appb274afd63b71:latest'"
+                sh 'sudo -t su - jenkins_devops'
+                def sshCommand = "ssh -t  app_devops@172.31.84.99 'docker run -d -p 8080:8080 --name nodejs_deploy  614217881944.dkr.ecr.us-east-1.amazonaws.com/nodejs-appb274afd63b71:latest'"
                 sh sshCommand
          }
         }
